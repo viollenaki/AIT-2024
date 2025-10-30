@@ -87,37 +87,54 @@ print("\nPerformance Matrix:\n", perf_matrix)
 
 # Step 5: Visualizations
 # 1. Bar Chart: Parameter Comparison
+plt.figure(figsize=(12, 8))
 perf_matrix.plot(kind='bar', x='Parameter', y=['Kyrgyzstan_Score_Normalized', 'Top10_Avg_Score_Normalized'])
-plt.title('Parameter Comparison: Kyrgyzstan vs Top 10 Avg')
-plt.ylabel('Normalized Score (0-100)')
-plt.savefig('bar_chart.png')
+plt.title('Parameter Comparison: Kyrgyzstan vs Top 10 Avg', fontsize=16)
+plt.ylabel('Normalized Score (0-100)', fontsize=12)
+plt.xlabel('Parameter', fontsize=12)
+plt.xticks(rotation=45, ha='right', fontsize=10)
+plt.legend(fontsize=10)
+plt.tight_layout()
+plt.savefig('bar_chart.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # 2. Scatter Plot: Correlation of Economic Accessibility to Milk Consumption
-plt.scatter(country_df['Economic_Accessibility'], country_df['Milk_Cons_Per_Capita_kg_year'], color='blue')
+plt.figure(figsize=(10, 8))
+plt.scatter(country_df['Economic_Accessibility'], country_df['Milk_Cons_Per_Capita_kg_year'], color='blue', alpha=0.7, s=50)
 kyrgyz_idx = country_df[country_df['Country'] == 'Kyrgyzstan'].index[0]
-plt.scatter(country_df['Economic_Accessibility'][kyrgyz_idx], country_df['Milk_Cons_Per_Capita_kg_year'][kyrgyz_idx], color='red', label='Kyrgyzstan')
-plt.title('Economic Accessibility vs Milk Consumption')
-plt.xlabel('Economic Accessibility Score')
-plt.ylabel('Milk Cons. Per Capita (kg/year)')
-plt.legend()
-plt.savefig('scatter_plot.png')
+plt.scatter(country_df['Economic_Accessibility'][kyrgyz_idx], country_df['Milk_Cons_Per_Capita_kg_year'][kyrgyz_idx], color='red', s=100, label='Kyrgyzstan')
+plt.title('Economic Accessibility vs Milk Consumption', fontsize=16)
+plt.xlabel('Economic Accessibility Score', fontsize=12)
+plt.ylabel('Milk Consumption Per Capita (kg/year)', fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('scatter_plot.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # 3. Pie Chart: Entropy Information Gain Breakdown
 gains = list(info_gain.values())
-labels = list(info_gain.keys())
-plt.pie(gains, labels=labels, autopct='%1.1f%%')
-plt.title('Information Gain Breakdown by Parameter')
-plt.savefig('pie_chart.png')
+labels = [label.replace('_', '\n') for label in info_gain.keys()]  # Break long labels
+plt.figure(figsize=(10, 8))
+plt.pie(gains, labels=labels, autopct='%1.1f%%', textprops={'fontsize': 10})
+plt.title('Information Gain Breakdown by Parameter', fontsize=16)
+plt.tight_layout()
+plt.savefig('pie_chart.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # 4. Heatmap: Gini Index Across Parameters
 gini_df = pd.DataFrame({'Parameter': list(gini_results.keys()), 'Gini': list(gini_results.values())})
+# Shorten parameter names for better display
+gini_df['Parameter'] = gini_df['Parameter'].str.replace('_', '\n')
 gini_pivot = gini_df.set_index('Parameter')  # For heatmap
-sns.heatmap(gini_pivot, annot=True, cmap='RdYlGn', vmin=0, vmax=1)
-plt.title('Gini Index Heatmap')
-plt.savefig('heatmap.png')
+plt.figure(figsize=(8, 10))
+sns.heatmap(gini_pivot, annot=True, cmap='RdYlGn', vmin=0, vmax=1, 
+            fmt='.2f', annot_kws={'fontsize': 12}, cbar_kws={'label': 'Gini Index'})
+plt.title('Gini Index Heatmap', fontsize=16)
+plt.ylabel('Parameter', fontsize=12)
+plt.xlabel('Gini Index Value', fontsize=12)
+plt.tight_layout()
+plt.savefig('heatmap.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 print("Visualizations saved as PNG files.")
