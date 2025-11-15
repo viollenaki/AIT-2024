@@ -1,0 +1,97 @@
+Company Payroll;;;;;;;;
+;;;;;;;;
+EMP#;Employee;DIVISION;DEPT;DATE of HIRE;HRS;HOURLY RATE;GROSS PAY;STATUS
+CW58;Abel, Colleen;California;Sales;21.07.2010;42;$27,42;$1 151,77;Full Time
+GBC29;Abel, James;New Jersey;Development;31.01.2011;35;$27,73;$970,58;Part Time
+GW30;Abel, Karina;Georgia;Sales;07.01.2007;42;$23,24;$976,02;Full Time
+GBW66;Abel, William;New Jersey;Sales;09.10.2009;40;$29,60;$1 184,16;Full Time
+AW24;Allen, Peter;Washington;Sales;26.05.2006;40;$20,29;$811,78;Full Time
+GC12;Altman, Mary;Georgia;Development;04.09.2007;29,5;$22,50;$663,87;Part Time
+GW14;Ambrose, Bob;Georgia;Sales;20.01.2005;35,5;$23,71;$841,87;Part Time
+GC04;Bally, Barry;Georgia;Development;10.04.2003;40;$24,63;$985,37;Full Time
+AS03;Banks, Jacqueline;Washington;Staff;28.01.2004;40;$24,06;$962,50;Full Time
+GW32;Barber, Mary;Georgia;Sales;20.11.2007;35,5;$22,47;$797,85;Part Time
+AA70;Binga, Erin;Washington;Research;03.04.2011;40;$26,23;$1 049,10;Full Time
+AA02;Binga, Frieda;Washington;Research;12.02.2002;40;$20,46;$818,38;Full Time
+AW55;Binga, Teri;Washington;Sales;02.06.2008;40;$20,38;$815,38;Full Time
+AA35;Bowers, Melanie;Washington;Research;30.11.2006;15,5;$23,86;$369,82;Part Time
+CA40;Briscoll, Doug;California;Research;21.05.2007;38;$26,22;$996,49;Part Time
+GBA48;Brown, Geoff;New Jersey;Research;26.06.2007;40;$24,12;$964,89;Full Time
+GW47;BSaleshoff, Tim;Georgia;Sales;22.10.2009;40;$27,43;$1 097,12;Full Time
+CW19;Califano, Theresa;California;Sales;21.02.2009;35;$24,99;$874,53;Part Time
+AS23;Calvin, Marianne;Washington;Staff;18.07.2005;40;$28,18;$1 127,35;Full Time
+GBC05;Chen, Shing;New Jersey;Development;03.08.2004;35,5;$23,55;$836,07;Part Time
+GBC49;Connors, Greg;New Jersey;Development;30.10.2007;38;$21,53;$818,05;Part Time
+GBC08;Cuffaro, Robert;New Jersey;Development;13.09.2003;40;$29,44;$1 177,41;Full Time
+GBC07;Culbert, Frank;New Jersey;Development;07.06.2003;40;$28,56;$1 142,34;Full Time
+CC45;Dandrow, Shirley;California;Development;09.03.2011;35;$21,34;$746,93;Part Time
+CC23;Davidson, Anne;California;Development;01.04.2006;25;$26,80;$669,96;Part Time
+GBC64;Davies, Lance;New Jersey;Development;25.12.2008;32;$29,93;$957,92;Part Time
+GBS45;DeVinney, Kristen;New Jersey;Staff;31.05.2007;35;$22,53;$788,70;Part Time
+GBA34;Drake, Susan;New Jersey;Research;08.12.2009;25;$22,03;$550,72;Part Time
+GBS16;EarnhSales, Kyle;New Jersey;Staff;03.10.2004;40;$22,22;$888,98;Full Time
+GW37;Feldsott, George;Georgia;Sales;28.11.2007;35,5;$24,04;$853,56;Part Time
+GC24;Gibbs, Richard;Georgia;Development;18.01.2009;29,5;$27,93;$823,85;Part Time
+CA18;Gorski, George;California;Research;02.05.2005;40;$25,32;$1 012,88;Full Time
+CA26;Halal, Cheryl;California;Research;27.01.2010;35,5;$22,04;$782,48;Part Time
+GBA33;Hayes, Ted;New Jersey;Research;02.12.2006;32;$20,94;$669,95;Part Time
+GW18;Hill, Carol;Georgia;Sales;16.07.2006;35,5;$23,78;$844,21;Part Time
+GBA21;Hillen, Brooks;New Jersey;Research;10.01.2006;35;$26,87;$940,48;Part Time
+GW15;Hinkelman, Brad;Georgia;Sales;03.11.2005;40;$28,04;$1 121,41;Full Time
+GBS57;Hoffman, Paul;New Jersey;Staff;14.12.2007;40;$22,00;$880,10;Full Time
+GBW12;Howard, Bradley;New Jersey;Sales;09.02.2004;40;$24,21;$968,40;Full Time
+GBS59;Hume, Chris;New Jersey;Staff;07.05.2008;40;$26,42;$1 056,67;Full Time
+GA27;Jacobs, John;Georgia;Research;29.09.2006;40;$26,16;$1 046,25;Full Time
+GA49;Kim, Sung;Georgia;Research;10.11.2009;40;$28,80;$1 152,01;Full Time
+GW29;Kling, Sara;Georgia;Sales;19.12.2006;35,5;$24,70;$876,87;Part Time
+AC49;Kramer, Dean;Washington;Development;18.06.2007;40;$24,72;$988,84;Full Time
+AW58;Lewis, Michael;Washington;Sales;22.04.2009;15,5;$22,05;$341,72;Part Time
+GBA24;Lillie, Christina;New Jersey;Research;24.05.2007;25;$29,02;$725,42;Part Time
+AW69;Maccaluso, Joshua;Washington;Sales;18.01.2011;40;$27,36;$1 094,35;Full Time
+AW07;MacFall, Jeri Lynn;Washington;Sales;03.04.2004;40;$23,56;$942,37;Full Time
+CA06;Mallory, Fred;California;Research;12.06.2003;38;$25,90;$984,05;Part Time
+GBS69;Masters, Todd;New Jersey;Staff;18.11.2009;40;$23,74;$949,76;Full Time
+GBA29;Mayron, Kathy;New Jersey;Research;14.05.2006;40;$22,12;$884,69;Full Time
+GBC09;Mazza, Dominick;New Jersey;Development;05.10.2006;40;$28,50;$1 140,17;Full Time
+GA08;McDonald, Jerry;Georgia;Research;02.07.2002;40;$23,89;$955,45;Full Time
+CS79;Miller, Theresa;California;Staff;27.02.2011;40;$24,43;$977,27;Full Time
+GC02;MSalesin, Paul;Georgia;Development;14.04.1999;40;$24,37;$974,61;Full Time
+GBW47;Murray, Robert;New Jersey;Sales;05.06.2007;40;$26,79;$1 071,72;Full Time
+CA80;Ness, Theodore;California;Research;30.07.2011;32;$26,95;$862,47;Part Time
+AW48;Owens, Alice;Washington;Sales;25.02.2007;15,5;$26,38;$408,89;Part Time
+AW09;Parker, Joanne;Washington;Sales;18.08.2004;40;$29,43;$1 177,33;Full Time
+GC20;Paterson, Henry;Georgia;Development;23.10.2007;40;$22,91;$916,54;Full Time
+GW11;Petty, Sue;Georgia;Sales;25.11.2014;40;$21,06;$842,54;Full Time
+GBW77;Reagan, Laura;New Jersey;Sales;07.08.2010;35;$26,19;$916,76;Part Time
+CW03;Reed, Chris;California;Sales;22.03.2004;35,5;$26,44;$938,66;Part Time
+CS15;Reese, Donald;California;Staff;12.08.2004;32;$20,86;$667,61;Part Time
+GBC11;Rich, James;New Jersey;Development;06.10.2006;35,5;$27,93;$991,54;Part Time
+GBA28;Richardson, Michael;New Jersey;Research;18.03.2006;35;$28,23;$988,20;Part Time
+GA23;Robinson, Paula;Georgia;Research;02.12.2007;29,5;$27,25;$803,76;Part Time
+CC76;Rose, Seth;California;Development;31.03.2010;32;$24,78;$792,99;Part Time
+AC17;Simmons, Lynne;Washington;Development;18.11.2008;35;$20,95;$733,30;Part Time
+GS07;Simpson, Bill;Georgia;Staff;07.01.2002;40;$24,21;$968,53;Full Time
+AS29;Singer, Steve;Washington;Staff;30.09.2006;40;$26,67;$1 066,93;Full Time
+AS12;Sloan, Grace;Washington;Staff;28.10.2004;40;$23,27;$930,84;Full Time
+GS40;Smith, Brian;Georgia;Staff;31.10.2008;40;$29,61;$1 184,51;Full Time
+GBA19;Smith, Julia;New Jersey;Research;12.02.2004;25;$27,12;$678,12;Part Time
+CS32;Smith, Katie;California;Staff;30.09.2006;40;$20,56;$822,23;Full Time
+GS54;Smith, Kim;Georgia;Staff;22.11.2009;42;$23,74;$997,20;Full Time
+CW30;Snyder, Jennifer;California;Sales;02.06.2008;25;$20,66;$516,41;Part Time
+GBC65;Steadman, Molly;New Jersey;Development;10.08.2009;40;$24,76;$990,46;Full Time
+GA57;StewSales, Helen;Georgia;Research;28.04.2010;42;$21,21;$890,77;Full Time
+GW04;Strong, Jeffrey;Georgia;Sales;03.03.2001;40;$29,69;$1 187,48;Full Time
+AW04;Sullivan, Lorrie;Washington;Sales;26.02.2001;15,5;$27,03;$419,00;Part Time
+GC25;Swayne, Harry;Georgia;Development;25.12.2010;40;$23,84;$953,57;Full Time
+GC26;Switzer, Maria;Georgia;Development;29.05.2011;29,5;$26,17;$772,05;Part Time
+GC07;Taylor, Holly;Georgia;Development;12.08.2004;29,5;$24,94;$735,68;Part Time
+AC53;Thomas, Greg;Washington;Development;19.12.2007;40;$21,93;$877,33;Full Time
+AW59;Tooley, Amy;Washington;Sales;27.08.2010;15,5;$22,23;$344,52;Part Time
+AC27;Trelly, Edward;Washington;Development;12.06.2006;40;$28,51;$1 140,49;Full Time
+GBA14;Tucker, Carol;New Jersey;Research;07.04.2004;38;$26,16;$994,01;Part Time
+GBW05;Wheeler, Bill;New Jersey;Sales;09.08.2001;38;$29,97;$1 138,76;Part Time
+GS09;Whitney, Sam;Georgia;Staff;23.11.2003;40;$25,35;$1 013,81;Full Time
+AW39;Williams, Esther;Washington;Sales;08.12.2006;40;$25,60;$1 024,08;Full Time
+GBW09;Willis, Sean;New Jersey;Sales;30.06.2005;35,5;$23,92;$849,21;Part Time
+AA25;Winger, Lindsey;Washington;Research;27.01.2006;35;$20,32;$711,23;Part Time
+GBA23;Winters, Jane;New Jersey;Research;02.11.2009;35;$27,53;$963,40;Part Time
