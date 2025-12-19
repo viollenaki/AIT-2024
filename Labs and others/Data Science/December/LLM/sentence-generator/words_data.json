@@ -1,0 +1,39 @@
+{
+  "pronouns": [
+    "I", "you", "he", "she", "we", "they", "it"
+  ],
+  "verbs": [
+    "eat", "drink", "run", "walk", "see", "hear", "make", "take", "give", "find",
+    "tell", "work", "call", "try", "ask", "need", "feel", "become", "leave", "put",
+    "mean", "keep", "let", "begin", "seem", "help", "talk", "turn", "start", "show",
+    "play", "move", "like", "live", "believe", "hold", "bring", "happen", "write", "sit",
+    "stand", "lose", "pay", "meet", "include", "continue", "set", "learn", "change", "lead"
+  ],
+  "determiners": [
+    "a", "an", "the", "my", "your", "his", "her", "our", "their", "some",
+    "any", "this", "that", "these", "those", "each", "every", "another", "other", "no"
+  ],
+  "adjectives": [
+    "good", "new", "old", "great", "big", "small", "high", "different", "large", "local",
+    "important", "young", "few", "public", "bad", "early", "able", "human", "late", "hard",
+    "real", "best", "right", "social", "only", "little", "sure", "low", "true", "simple",
+    "certain", "hot", "cold", "beautiful", "happy", "sad", "angry", "excited", "tired", "hungry",
+    "thirsty", "smart", "stupid", "funny", "serious", "kind", "mean", "brave", "scared", "proud"
+  ],
+  "nouns": [
+    "time", "person", "year", "way", "day", "thing", "man", "world", "life", "hand",
+    "part", "child", "eye", "woman", "place", "work", "week", "case", "point", "government",
+    "company", "number", "group", "problem", "fact", "car", "house", "book", "door", "room",
+    "water", "food", "money", "music", "movie", "friend", "family", "teacher", "student", "dog",
+    "cat", "city", "country", "tree", "street", "phone", "computer", "table", "chair", "window",
+    "idea", "question", "answer", "story", "game", "song", "word", "letter", "paper", "pen"
+  ],
+  "conjunctions": [
+    "and", "but", "or", "so", "yet", "for", "nor", "because", "although", "while",
+    "if", "unless", "until", "when", "where", "though", "since", "after", "before"
+  ],
+  "particles": [
+    "up", "down", "in", "out", "on", "off", "over", "under", "away", "back",
+    "around", "through", "along", "across", "together", "apart", "aside", "forward", "backward"
+  ]
+}
