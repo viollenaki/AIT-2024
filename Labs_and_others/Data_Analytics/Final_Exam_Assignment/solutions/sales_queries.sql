@@ -1,7 +1,7 @@
 -- Active: 1768737161166@@127.0.0.1@3306
 CREATE TABLE sales (
     order_id INTEGER PRIMARY KEY,
-    order_date TEXT NOT NULL,       -- ISO format: YYYY-MM-DD
+    order_date TEXT NOT NULL,
     customer_id TEXT NOT NULL,
     product TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE sales (
 );
 
 -- ============================================
--- 2. INSERT DATA
+-- 2. inserting data
 -- ============================================
 INSERT INTO sales (order_id, order_date, customer_id, product, category, price, quantity, region) VALUES
 (1001, '2024-01-05', 'C001', 'Laptop Pro', 'Electronics', 1200, 1, 'North'),
@@ -45,20 +45,15 @@ INSERT INTO sales (order_id, order_date, customer_id, product, category, price, 
 (1029, '2024-03-20', 'C008', 'Wireless Mouse', 'Electronics', 25, 2, 'West'),
 (1030, '2024-03-22', 'C009', 'Pen Set', 'Stationery', 12, 4, 'South');
 
--- ============================================
--- 3. SQL QUERIES
--- ============================================
-
 -- --------------------------------------------
--- Query 1: Total Revenue
+-- query 1: total revenue
 -- --------------------------------------------
 SELECT
     SUM(price * quantity) AS total_revenue
 FROM sales;
 
 -- --------------------------------------------
--- Query 2: Revenue by Category
--- Uses: GROUP BY, ORDER BY
+-- query 2: revenue by category
 -- --------------------------------------------
 SELECT
     category,
@@ -68,8 +63,7 @@ GROUP BY category
 ORDER BY category_revenue DESC;
 
 -- --------------------------------------------
--- Query 3: Top 5 Products by Revenue
--- Uses: GROUP BY, ORDER BY
+-- query 3: top 5 products by revenue
 -- --------------------------------------------
 SELECT
     product,
@@ -80,8 +74,7 @@ ORDER BY product_revenue DESC
 LIMIT 5;
 
 -- --------------------------------------------
--- Query 4: Monthly Revenue
--- Uses: DATE functions, GROUP BY, ORDER BY
+-- query 4: monthly revenue
 -- --------------------------------------------
 SELECT
     strftime('%Y-%m', order_date) AS year_month,
@@ -92,7 +85,6 @@ ORDER BY year_month;
 
 -- --------------------------------------------
 -- Query 5: Revenue by Region
--- Uses: GROUP BY, ORDER BY
 -- --------------------------------------------
 SELECT
     region,
