@@ -1,0 +1,31 @@
+order_id;order_date;customer_id;product;category;price;quantity;region;revenue;;;Row Labels;Sum of revenue;;;Row Labels;Sum of revenue;;;Row Labels;Sum of revenue
+1001;05.01.2024;C001;Laptop Pro;Electronics;1200;1;North;1200;;;Electronics;6610;;;East;1921;;;ÿםג;2666
+1002;06.01.2024;C002;Wireless Mouse;Electronics;25;2;South;50;;;Furniture;1970;;;North;3775;;;פוג;3760
+1003;07.01.2024;C003;Office Chair;Furniture;180;1;East;180;;;Stationery;369;;;South;2263;;;לאנ;2523
+1004;08.01.2024;C001;USB-C Hub;Electronics;45;1;North;45;;;Grand Total;8949;;;West;990;;;Grand Total;8949
+1005;10.01.2024;C004;Standing Desk;Furniture;350;1;West;350;;;;;;;Grand Total;8949;;;;
+1006;11.01.2024;C005;Notebook;Stationery;5;10;South;50;;;;;;;;;;;;
+1007;12.01.2024;C006;Pen Set;Stationery;12;3;East;36;;;;;;;;;;;;
+1008;14.01.2024;C002;Keyboard;Electronics;75;1;South;75;;;;;;;;;;;;
+1009;15.01.2024;C007;"Monitor 27""";Electronics;300;2;North;600;;;;;;;;;;;;
+1010;17.01.2024;C008;Desk Lamp;Furniture;40;2;West;80;;;;;;;;;;;;
+1011;01.02.2024;C001;Laptop Pro;Electronics;1200;1;North;1200;;;;;;;;;;;;
+1012;03.02.2024;C009;Office Chair;Furniture;180;2;South;360;;;;;;;;;;;;
+1013;05.02.2024;C010;Notebook;Stationery;5;20;East;100;;;;;;;;;;;;
+1014;06.02.2024;C003;Keyboard;Electronics;75;1;East;75;;;;;;;;;;;;
+1015;08.02.2024;C004;"Monitor 27""";Electronics;300;1;West;300;;;;;;;;;;;;
+1016;10.02.2024;C005;Desk Lamp;Furniture;40;1;South;40;;;;;;;;;;;;
+1017;12.02.2024;C006;Wireless Mouse;Electronics;25;3;East;75;;;;;;;;;;;;
+1018;15.02.2024;C007;Standing Desk;Furniture;350;1;North;350;;;;;;;;;;;;
+1019;18.02.2024;C008;Pen Set;Stationery;12;5;West;60;;;;;;;;;;;;
+1020;20.02.2024;C002;Laptop Pro;Electronics;1200;1;South;1200;;;;;;;;;;;;
+1021;01.03.2024;C009;USB-C Hub;Electronics;45;2;South;90;;;;;;;;;;;;
+1022;03.03.2024;C010;Office Chair;Furniture;180;1;East;180;;;;;;;;;;;;
+1023;05.03.2024;C001;"Monitor 27""";Electronics;300;1;North;300;;;;;;;;;;;;
+1024;07.03.2024;C003;Notebook;Stationery;5;15;East;75;;;;;;;;;;;;
+1025;09.03.2024;C004;Keyboard;Electronics;75;2;West;150;;;;;;;;;;;;
+1026;12.03.2024;C005;Standing Desk;Furniture;350;1;South;350;;;;;;;;;;;;
+1027;14.03.2024;C006;Laptop Pro;Electronics;1200;1;East;1200;;;;;;;;;;;;
+1028;18.03.2024;C007;Desk Lamp;Furniture;40;2;North;80;;;;;;;;;;;;
+1029;20.03.2024;C008;Wireless Mouse;Electronics;25;2;West;50;;;;;;;;;;;;
+1030;22.03.2024;C009;Pen Set;Stationery;12;4;South;48;;;;;;;;;;;;
