@@ -10,9 +10,6 @@ CREATE TABLE sales (
     region TEXT NOT NULL
 );
 
--- ============================================
--- 2. inserting data
--- ============================================
 INSERT INTO sales (order_id, order_date, customer_id, product, category, price, quantity, region) VALUES
 (1001, '2024-01-05', 'C001', 'Laptop Pro', 'Electronics', 1200, 1, 'North'),
 (1002, '2024-01-06', 'C002', 'Wireless Mouse', 'Electronics', 25, 2, 'South'),
@@ -84,7 +81,7 @@ GROUP BY year_month
 ORDER BY year_month;
 
 -- --------------------------------------------
--- Query 5: Revenue by Region
+-- query 5: revenue by region
 -- --------------------------------------------
 SELECT
     region,
