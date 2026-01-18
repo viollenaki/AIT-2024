@@ -1,4 +1,4 @@
--- Active: 1768737161166@@127.0.0.1@3306
+-- Active: 1768744757453@@127.0.0.1@3306
 CREATE TABLE sales (
     order_id INTEGER PRIMARY KEY,
     order_date TEXT NOT NULL,
