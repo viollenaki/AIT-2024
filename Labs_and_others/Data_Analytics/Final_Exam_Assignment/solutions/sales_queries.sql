@@ -1,14 +1,4 @@
--- SQLite in-memory database
--- Active: 1768736588682@@127.0.0.1@3306
--- ============================================
--- Sales Database - SQL Queries
--- SQLite Version (No Server, No Connection)
--- ============================================
-
-
--- ============================================
--- 1. CREATE TABLE
--- ============================================
+-- Active: 1768737161166@@127.0.0.1@3306
 CREATE TABLE sales (
     order_id INTEGER PRIMARY KEY,
     order_date TEXT NOT NULL,       -- ISO format: YYYY-MM-DD
@@ -112,8 +102,7 @@ GROUP BY region
 ORDER BY region_revenue DESC;
 
 -- --------------------------------------------
--- Query 6: Customers with Spending Above Average
--- Uses: GROUP BY, HAVING, Subquery
+-- query 6: customers with spending above average
 -- --------------------------------------------
 SELECT
     customer_id,
