@@ -1,0 +1,16 @@
+OrderID,Customer,Product,Category,Quantity,Price,City,Date
+1,Alice,Laptop,Electronics,1,800,Bishkek,2025-01-05
+2,Bob,Phone,Electronics,2,500,Osh,2025-01-06
+3,Charlie,Tablet,Electronics,1,300,Bishkek,2025-01-07
+4,Diana,Headphones,Accessories,3,50,Karakol,2025-01-07
+5,Evan,Keyboard,Accessories,2,70,Osh,2025-01-08
+6,Fiona,Mouse,Accessories,5,25,Bishkek,2025-01-09
+7,George,Laptop,Electronics,1,850,Osh,2025-01-10
+8,Helen,Phone,Electronics,1,520,Karakol,2025-01-10
+9,Ian,Tablet,Electronics,2,310,Bishkek,2025-01-11
+10,Jane,Monitor,Electronics,1,200,Osh,2025-01-12
+11,Kevin,Mouse,Accessories,4,25,Bishkek,2025-01-12
+12,Lisa,Keyboard,Accessories,1,70,Karakol,2025-01-13
+13,Mike,Laptop,Electronics,2,780,Bishkek,2025-01-14
+14,Nina,Phone,Electronics,3,510,Osh,2025-01-14
+15,Omar,Headphones,Accessories,2,55,Bishkek,2025-01-15
