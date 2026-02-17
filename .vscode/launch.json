@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "org.example.Main",
+      "projectName": ""
+    },
+    {
+      "type": "java",
       "name": "App",
       "request": "launch",
       "mainClass": "ds_lab.App",
