@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-NN Classifier · 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ed;
+    --surface: #faf8f5;
+    --surface2: #edeae4;
+    --border: #d8d3ca;
+    --border2: #c8c2b8;
+    --ink: #1a1814;
+    --ink2: #4a4640;
+    --ink3: #8a847c;
+    --ca: #e8340a;
+    --cb: #0a7de8;
+    --cc: #16a34a;
+    --cq: #7c3aed;
+    --shadow: rgba(26,24,20,0.08);
+    --shadow2: rgba(26,24,20,0.16);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .logo-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .logo-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 0.2rem 0.5rem;
+    background: var(--ink);
+    color: var(--surface);
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .header-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink3);
+    letter-spacing: 0.05em;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { border-left: none; border-top: 1px solid var(--border); }
+  }
+
+  /* ── Canvas ── */
+  .canvas-section {
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  #scene {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 560px;
+    cursor: crosshair;
+  }
+
+  .canvas-hint {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+
+  .canvas-crosshair {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.06em;
+    pointer-events: none;
+    line-height: 1.8;
+  }
+
+  .classify-overlay {
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--cq);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    box-shadow: inset 0 0 40px rgba(124,58,237,0.15);
+  }
+  .classify-overlay.active { opacity: 1; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .section {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink3);
+    margin-bottom: 1rem;
+  }
+
+  /* Result */
+  .result-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-height: 68px;
+  }
+
+  .result-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: var(--border);
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-swatch::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  .result-text { flex: 1; }
+
+  .result-class-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+
+  .result-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--ink3);
+  }
+
+  .result-votes {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .vote-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.2rem 0.45rem;
+    border-radius: 3px;
+    color: #fff;
+  }
+
+  /* Class buttons */
+  .class-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .cls-btn {
+    padding: 0.6rem 0.5rem;
+    border: 1.5px solid var(--border2);
+    border-radius: 6px;
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .cls-btn .cls-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+  }
+
+  .cls-btn[data-class="A"] { border-color: var(--ca); }
+  .cls-btn[data-class="B"] { border-color: var(--cb); }
+  .cls-btn[data-class="C"] { border-color: var(--cc); }
+
+  .cls-btn[data-class="A"].active { background: var(--ca); color: #fff; border-color: var(--ca); }
+  .cls-btn[data-class="B"].active { background: var(--cb); color: #fff; border-color: var(--cb); }
+  .cls-btn[data-class="C"].active { background: var(--cc); color: #fff; border-color: var(--cc); }
+
+  /* Sliders */
+  .slider-group { margin-bottom: 1rem; }
+  .slider-group:last-child { margin-bottom: 0; }
+
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .slider-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink2);
+  }
+
+  .slider-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1.5px var(--ink), 0 2px 6px var(--shadow2);
+    transition: transform 0.1s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  /* Buttons */
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.65rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .btn-primary:hover { background: #2d2a26; transform: translateY(-1px); box-shadow: 0 4px 12px var(--shadow2); }
+  .btn-primary.classify-active {
+    background: var(--cq);
+  }
+
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--ink2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--border); }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .stat-tile {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink3);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-num {
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .stat-tile.cls-a { border-left: 3px solid var(--ca); }
+  .stat-tile.cls-b { border-left: 3px solid var(--cb); }
+  .stat-tile.cls-c { border-left: 3px solid var(--cc); }
+  .stat-tile.cls-total { border-left: 3px solid var(--ink3); }
+
+  /* Coords */
+  .coord-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .coord-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+  }
+
+  .coord-axis {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 0.2rem;
+  }
+
+  .coord-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* Legend */
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--ink2);
+  }
+  .legend-row:last-child { margin-bottom: 0; }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-shape {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  /* Mode indicator */
+  .mode-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--ink3);
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+
+  .mode-indicator.classify {
+    background: rgba(124,58,237,0.08);
+    border-color: var(--cq);
+    color: var(--cq);
+  }
+
+  .mode-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink3);
+    transition: background 0.2s;
+  }
+  .mode-indicator.classify .mode-dot {
+    background: var(--cq);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(124,58,237,0.1); }
+  }
+
+  .z-preview {
+    margin-top: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink3);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .z-preview span:last-child { color: var(--ink); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-title">K-Nearest Neighbors</span>
+    <span class="logo-badge">3D</span>
+  </div>
+  <div class="header-right" id="headerCoords">drag to orbit · click to add · right-click to query</div>
+</header>
+
+<div class="layout">
+
+  <div class="canvas-section">
+    <div id="scene"></div>
+    <div class="classify-overlay" id="classifyOverlay"></div>
+    <div class="canvas-hint">left-click: add training point &nbsp;·&nbsp; right-click: classify query point &nbsp;·&nbsp; drag: orbit</div>
+    <div class="canvas-crosshair" id="canvasCrosshair">
+      X: —<br>Z: —<br>Y: —
+    </div>
+  </div>
+
+  <div class="sidebar">
+
+    <!-- Result -->
+    <div class="section">
+      <div class="section-label">Prediction</div>
+      <div class="result-display" id="resultDisplay">
+        <div class="result-swatch" id="resultSwatch"></div>
+        <div class="result-text">
+          <div class="result-class-name" id="resultName">No prediction yet</div>
+          <div class="result-meta" id="resultMeta">classify a point to begin</div>
+        </div>
+      </div>
+      <div class="result-votes" id="resultVotes"></div>
+    </div>
+
+    <!-- Mode & Controls -->
+    <div class="section">
+      <div class="section-label">Mode</div>
+      <div class="mode-indicator" id="modeIndicator">
+        <div class="mode-dot"></div>
+        <span id="modeText">ADD TRAINING POINT</span>
+      </div>
+
+      <div style="margin-top:1rem">
+        <div class="section-label" style="margin-bottom:0.75rem">Active Class</div>
+        <div class="class-picker">
+          <button class="cls-btn active" data-class="A">
+            <span style="font-size:1rem">▲</span>
+            Class A
+          </button>
+          <button class="cls-btn" data-class="B">
+            <span style="font-size:1rem">●</span>
+            Class B
+          </button>
+          <button class="cls-btn" data-class="C">
+            <span style="font-size:1rem">■</span>
+            Class C
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- K + Z sliders -->
+    <div class="section">
+      <div class="section-label">Parameters</div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">K Neighbors</span>
+          <span class="slider-val" id="kVal">3</span>
+        </div>
+        <input type="range" id="kSlider" min="1" max="15" value="3" step="2">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-name">Depth (Y axis)</span>
+          <span class="slider-val" id="zVal">0.0</span>
+        </div>
+        <input type="range" id="zSlider" min="-100" max="100" value="0" step="5">
+        <div class="z-preview">
+          <span>Current depth layer</span>
+          <span id="zPreview">Y = 0.0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="section">
+      <div class="section-label">Actions</div>
+      <div class="action-row">
+        <button class="btn btn-primary" id="btnClassify">Query Point</button>
+        <button class="btn btn-ghost" id="btnClear">Clear All</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="section">
+      <div class="section-label">Dataset</div>
+      <div class="stats-grid">
+        <div class="stat-tile cls-total">
+          <div class="stat-label">Total</div>
+          <div class="stat-num" id="statTotal">0</div>
+        </div>
+        <div class="stat-tile cls-a">
+          <div class="stat-label">Class A</div>
+          <div class="stat-num" id="statA">0</div>
+        </div>
+        <div class="stat-tile cls-b">
+          <div class="stat-label">Class B</div>
+          <div class="stat-num" id="statB">0</div>
+        </div>
+        <div class="stat-tile cls-c">
+          <div class="stat-label">Class C</div>
+          <div class="stat-num" id="statC">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Query Coords -->
+    <div class="section">
+      <div class="section-label">Query Coordinates</div>
+      <div class="coord-grid">
+        <div class="coord-box">
+          <div class="coord-axis">X</div>
+          <div class="coord-val" id="coordX">—</div>
+        </div>
+        <div class="coord-box">
+          <div class="coord-axis">Y</div>
+          <div class="coord-val" id="coordY">—</div>
+        </div>
+        <div class="coord-box">
+          <div class="coord-axis">Z</div>
+          <div class="coord-val" id="coordZ">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="section">
+      <div class="section-label">Legend</div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:var(--ca)"></div>
+        Class A — cone (red)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:var(--cb)"></div>
+        Class B — sphere (blue)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:var(--cc)"></div>
+        Class C — box (green)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:var(--cq); border: 2px dashed rgba(124,58,237,0.5)"></div>
+        Query point (purple)
+      </div>
+      <div class="legend-row" style="margin-top:0.5rem; color:var(--ink3); font-size:0.7rem; line-height:1.6">
+        Dashed lines connect the K nearest neighbors to the query point.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ────────────────────────────────────────────────────────────────
+// DOM refs
+// ────────────────────────────────────────────────────────────────
+const sceneEl         = document.getElementById('scene');
+const kSlider         = document.getElementById('kSlider');
+const kVal            = document.getElementById('kVal');
+const zSlider         = document.getElementById('zSlider');
+const zVal            = document.getElementById('zVal');
+const zPreview        = document.getElementById('zPreview');
+const btnClassify     = document.getElementById('btnClassify');
+const btnClear        = document.getElementById('btnClear');
+const resultDisplay   = document.getElementById('resultDisplay');
+const resultSwatch    = document.getElementById('resultSwatch');
+const resultName      = document.getElementById('resultName');
+const resultMeta      = document.getElementById('resultMeta');
+const resultVotes     = document.getElementById('resultVotes');
+const modeIndicator   = document.getElementById('modeIndicator');
+const modeText        = document.getElementById('modeText');
+const classifyOverlay = document.getElementById('classifyOverlay');
+const canvasCrosshair = document.getElementById('canvasCrosshair');
+const headerCoords    = document.getElementById('headerCoords');
+
+const coordX = document.getElementById('coordX');
+const coordY = document.getElementById('coordY');
+const coordZ = document.getElementById('coordZ');
+
+// ────────────────────────────────────────────────────────────────
+// State
+// ────────────────────────────────────────────────────────────────
+let points = [];
+let queryPoint = null;
+let neighbors = [];
+let activeClass = 'A';
+let classifyMode = false;
+
+const WORLD = 200;
+
+const COLORS = {
+  A: 0xe8340a,
+  B: 0x0a7de8,
+  C: 0x16a34a,
+  Q: 0x7c3aed
+};
+
+const CSS_COLORS = {
+  A: '#e8340a',
+  B: '#0a7de8',
+  C: '#16a34a',
+  Q: '#7c3aed'
+};
+
+const CLASS_NAMES = {
+  A: 'Class A',
+  B: 'Class B',
+  C: 'Class C'
+};
+
+// ────────────────────────────────────────────────────────────────
+// Three.js setup
+// ────────────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
+scene.fog = new THREE.FogExp2(0x111111, 0.0015);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 3000);
+camera.position.set(280, 220, 280);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+sceneEl.appendChild(renderer.domElement);
+
+// Resize handling
+function resizeRenderer() {
+  const w = sceneEl.clientWidth;
+  const h = sceneEl.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+resizeRenderer();
+window.addEventListener('resize', resizeRenderer);
+
+// Orbit controls
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0, 0);
+controls.mouseButtons = {
+  LEFT: THREE.MOUSE.ROTATE,
+  MIDDLE: THREE.MOUSE.DOLLY,
+  RIGHT: null  // FIX: disable right-click orbit so we can use it for classify
+};
+
+// Lighting
+const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambient);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+keyLight.position.set(200, 300, 150);
+keyLight.castShadow = true;
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x8fc0ff, 0.4);
+fillLight.position.set(-150, 100, -200);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0xffd0a0, 0.3);
+rimLight.position.set(0, -200, 0);
+scene.add(rimLight);
+
+// Grid
+const gridHelper = new THREE.GridHelper(WORLD, 16, 0x333333, 0x222222);
+scene.add(gridHelper);
+
+// Axis arrows
+function makeAxis(dir, color, label) {
+  const origin = new THREE.Vector3(0, 0, 0);
+  const arrow = new THREE.ArrowHelper(dir, origin, 90, color, 14, 8);
+  scene.add(arrow);
+}
+makeAxis(new THREE.Vector3(1,0,0), 0xe8340a, 'X');
+makeAxis(new THREE.Vector3(0,1,0), 0x16a34a, 'Y');
+makeAxis(new THREE.Vector3(0,0,1), 0x0a7de8, 'Z');
+
+// Box wireframe for space reference
+const boxGeo = new THREE.BoxGeometry(WORLD, WORLD, WORLD);
+const boxEdges = new THREE.EdgesGeometry(boxGeo);
+const boxLine = new THREE.LineSegments(boxEdges, new THREE.LineBasicMaterial({ color: 0x2a2a2a, transparent: true, opacity: 0.4 }));
+scene.add(boxLine);
+
+// ────────────────────────────────────────────────────────────────
+// Interaction plane & raycasting
+// FIX: use a large invisible plane mesh for accurate raycasting
+// instead of THREE.Plane.intersectPlane which drifts with camera
+// ────────────────────────────────────────────────────────────────
+const planeMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(2000, 2000),
+  new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide })
+);
+planeMesh.rotation.x = -Math.PI / 2;
+scene.add(planeMesh);
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function getCanvasPos(e) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((e.clientX - rect.left) / rect.width)  *  2 - 1;
+  pointer.y = -((e.clientY - rect.top)  / rect.height) *  2 + 1;
+}
+
+function getWorldPos(e) {
+  getCanvasPos(e);
+  raycaster.setFromCamera(pointer, camera);
+  const hits = raycaster.intersectObject(planeMesh);
+  if (hits.length === 0) return null;
+  const pt = hits[0].point;
+  return {
+    x: THREE.MathUtils.clamp(pt.x, -WORLD / 2, WORLD / 2),
+    z: THREE.MathUtils.clamp(pt.z, -WORLD / 2, WORLD / 2)
+  };
+}
+
+// ────────────────────────────────────────────────────────────────
+// Point meshes
+// ────────────────────────────────────────────────────────────────
+const GEOM = {
+  A: new THREE.ConeGeometry(5.5, 13, 4),
+  B: new THREE.SphereGeometry(6, 24, 24),
+  C: new THREE.BoxGeometry(11, 11, 11)
+};
+
+const pointsGroup = new THREE.Group();
+scene.add(pointsGroup);
+
+let pointMeshes = [];
+let queryMesh = null;
+let neighborLines = [];
+
+function addPointMesh(pt) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: COLORS[pt.cls],
+    roughness: 0.3,
+    metalness: 0.1,
+    emissive: COLORS[pt.cls],
+    emissiveIntensity: 0.08
+  });
+  const mesh = new THREE.Mesh(GEOM[pt.cls], mat);
+  // FIX: use pt.y as the actual world Y (vertical height), not pt.z
+  mesh.position.set(pt.x, pt.y, pt.z);
+  if (pt.cls === 'A') mesh.rotation.y = Math.PI / 4;
+  pointsGroup.add(mesh);
+  pointMeshes.push(mesh);
+  return mesh;
+}
+
+function clearScenePoints() {
+  pointMeshes.forEach(m => {
+    pointsGroup.remove(m);
+    m.material.dispose();
+  });
+  pointMeshes = [];
+}
+
+function clearQueryAndLines() {
+  if (queryMesh) {
+    scene.remove(queryMesh);
+    queryMesh.material.dispose();
+    queryMesh = null;
+  }
+  neighborLines.forEach(l => {
+    scene.remove(l);
+    l.geometry.dispose();
+    l.material.dispose();
+  });
+  neighborLines = [];
+}
+
+function renderQuery() {
+  clearQueryAndLines();
+  if (!queryPoint) return;
+
+  const geo = new THREE.SphereGeometry(5.5, 24, 24);
+  const mat = new THREE.MeshStandardMaterial({
+    color: COLORS.Q,
+    roughness: 0.2,
+    metalness: 0.2,
+    emissive: COLORS.Q,
+    emissiveIntensity: 0.3
+  });
+  queryMesh = new THREE.Mesh(geo, mat);
+  queryMesh.position.set(queryPoint.x, queryPoint.y, queryPoint.z);
+  scene.add(queryMesh);
+
+  // Dashed lines to neighbors
+  neighbors.forEach(p => {
+    const points3 = [
+      new THREE.Vector3(queryPoint.x, queryPoint.y, queryPoint.z),
+      new THREE.Vector3(p.x, p.y, p.z)
+    ];
+    const geo = new THREE.BufferGeometry().setFromPoints(points3);
+    const mat = new THREE.LineDashedMaterial({
+      color: COLORS[p.cls],
+      dashSize: 5,
+      gapSize: 3,
+      transparent: true,
+      opacity: 0.7
+    });
+    const line = new THREE.Line(geo, mat);
+    line.computeLineDistances();
+    scene.add(line);
+    neighborLines.push(line);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────
+// KNN algorithm
+// ────────────────────────────────────────────────────────────────
+function euclidean(a, b) {
+  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2);
+}
+
+function knn(qx, qy, qz, k) {
+  if (points.length === 0) return null;
+  const sorted = points
+    .map(p => ({ ...p, dist: euclidean({ x: qx, y: qy, z: qz }, p) }))
+    .sort((a, b) => a.dist - b.dist);
+  const kn = sorted.slice(0, Math.min(k, sorted.length));
+  const votes = {};
+  kn.forEach(p => { votes[p.cls] = (votes[p.cls] || 0) + 1; });
+  const winner = Object.entries(votes).sort((a, b) => b[1] - a[1])[0];
+  return { predicted: winner[0], votes, kNearest: kn };
+}
+
+function classify(x, y, z) {
+  if (points.length === 0) {
+    resultName.textContent = 'No training data';
+    resultMeta.textContent = 'add some points first';
+    resultVotes.innerHTML = '';
+    return;
+  }
+  queryPoint = { x, y, z };
+  const k = parseInt(kSlider.value);
+  const result = knn(x, y, z, k);
+  neighbors = result.kNearest;
+
+  resultSwatch.style.background = CSS_COLORS[result.predicted];
+  resultName.textContent = CLASS_NAMES[result.predicted];
+  resultMeta.textContent = `k=${k} · dist to nearest: ${neighbors[0].dist.toFixed(1)}`;
+
+  resultVotes.innerHTML = '';
+  Object.entries(result.votes).forEach(([cls, n]) => {
+    const chip = document.createElement('div');
+    chip.className = 'vote-chip';
+    chip.style.background = CSS_COLORS[cls];
+    chip.textContent = `${CLASS_NAMES[cls]}: ${n}`;
+    resultVotes.appendChild(chip);
+  });
+
+  coordX.textContent = x.toFixed(1);
+  coordY.textContent = y.toFixed(1);
+  coordZ.textContent = z.toFixed(1);
+
+  renderQuery();
+}
+
+// ────────────────────────────────────────────────────────────────
+// Stats
+// ────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('statTotal').textContent = points.length;
+  document.getElementById('statA').textContent = points.filter(p => p.cls === 'A').length;
+  document.getElementById('statB').textContent = points.filter(p => p.cls === 'B').length;
+  document.getElementById('statC').textContent = points.filter(p => p.cls === 'C').length;
+}
+
+// ────────────────────────────────────────────────────────────────
+// Classify mode UI
+// ────────────────────────────────────────────────────────────────
+function setClassifyMode(on) {
+  classifyMode = on;
+  classifyOverlay.classList.toggle('active', on);
+  modeIndicator.classList.toggle('classify', on);
+  if (on) {
+    modeText.textContent = 'CLASSIFY — CLICK CANVAS';
+    btnClassify.textContent = 'Cancel';
+    btnClassify.classList.add('classify-active');
+  } else {
+    modeText.textContent = 'ADD TRAINING POINT';
+    btnClassify.textContent = 'Query Point';
+    btnClassify.classList.remove('classify-active');
+  }
+}
+
+// ────────────────────────────────────────────────────────────────
+// Event listeners
+// ────────────────────────────────────────────────────────────────
+kSlider.addEventListener('input', () => {
+  kVal.textContent = kSlider.value;
+  if (queryPoint) classify(queryPoint.x, queryPoint.y, queryPoint.z);
+});
+
+zSlider.addEventListener('input', () => {
+  const v = (parseInt(zSlider.value) / 10).toFixed(1);
+  zVal.textContent = v;
+  zPreview.textContent = `Y = ${v}`;
+});
+
+document.querySelectorAll('.cls-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cls-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeClass = btn.dataset.class;
+    setClassifyMode(false);
+  });
+});
+
+btnClassify.addEventListener('click', () => {
+  setClassifyMode(!classifyMode);
+});
+
+btnClear.addEventListener('click', () => {
+  points = [];
+  queryPoint = null;
+  neighbors = [];
+  clearScenePoints();
+  clearQueryAndLines();
+  setClassifyMode(false);
+  updateStats();
+  coordX.textContent = '—';
+  coordY.textContent = '—';
+  coordZ.textContent = '—';
+  resultSwatch.style.background = 'var(--border)';
+  resultName.textContent = 'No prediction yet';
+  resultMeta.textContent = 'classify a point to begin';
+  resultVotes.innerHTML = '';
+});
+
+// Left click: add point or classify (if classifyMode)
+let isDragging = false;
+let mouseDownPos = { x: 0, y: 0 };
+
+renderer.domElement.addEventListener('mousedown', e => {
+  mouseDownPos = { x: e.clientX, y: e.clientY };
+  isDragging = false;
+});
+
+renderer.domElement.addEventListener('mousemove', e => {
+  const dx = e.clientX - mouseDownPos.x;
+  const dy = e.clientY - mouseDownPos.y;
+  if (Math.sqrt(dx*dx + dy*dy) > 4) isDragging = true;
+
+  // Update crosshair coords
+  const pos = getWorldPos(e);
+  if (pos) {
+    const y = (parseInt(zSlider.value) / 10);
+    canvasCrosshair.innerHTML = `X: ${pos.x.toFixed(1)}<br>Z: ${pos.z.toFixed(1)}<br>Y: ${y.toFixed(1)}`;
+  }
+});
+
+renderer.domElement.addEventListener('click', e => {
+  // FIX: ignore clicks that were actually drags (orbit)
+  if (isDragging) return;
+  const pos = getWorldPos(e);
+  if (!pos) return;
+  const y = parseInt(zSlider.value) / 10;
+
+  if (classifyMode) {
+    classify(pos.x, y, pos.z);
+    setClassifyMode(false);
+  } else {
+    points.push({ x: pos.x, y, z: pos.z, cls: activeClass });
+    addPointMesh(points[points.length - 1]);
+    updateStats();
+    // Re-run classification if there's a query point
+    if (queryPoint) classify(queryPoint.x, queryPoint.y, queryPoint.z);
+  }
+});
+
+// Right click: always classify
+renderer.domElement.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  if (isDragging) return;
+  const pos = getWorldPos(e);
+  if (!pos) return;
+  const y = parseInt(zSlider.value) / 10;
+  classify(pos.x, y, pos.z);
+  setClassifyMode(false);
+});
+
+// ────────────────────────────────────────────────────────────────
+// Seed data
+// ────────────────────────────────────────────────────────────────
+const seed = [
+  {x:-70,y:15,z:-55,cls:'A'},{x:-60,y:25,z:-40,cls:'A'},{x:-50,y:12,z:-65,cls:'A'},
+  {x:-80,y:8, z:-48,cls:'A'},{x:-68,y:20,z:-30,cls:'A'},{x:-58,y:30,z:-58,cls:'A'},
+
+  {x:65, y:-8, z:-60,cls:'B'},{x:78, y:5,  z:-42,cls:'B'},{x:58, y:-14,z:-72,cls:'B'},
+  {x:88, y:8,  z:-54,cls:'B'},{x:70, y:-3, z:-28,cls:'B'},{x:80, y:12, z:-65,cls:'B'},
+
+  {x:4,  y:38, z:68, cls:'C'},{x:18, y:44, z:54, cls:'C'},{x:-6, y:30, z:80, cls:'C'},
+  {x:10, y:48, z:76, cls:'C'},{x:-18,y:34, z:64, cls:'C'},{x:22, y:52, z:58, cls:'C'},
+];
+
+points = [...seed];
+points.forEach(addPointMesh);
+updateStats();
+
+// Init slider labels
+zVal.textContent = (parseInt(zSlider.value) / 10).toFixed(1);
+zPreview.textContent = `Y = ${zVal.textContent}`;
+
+// ────────────────────────────────────────────────────────────────
+// Render loop — FIX: NO auto-rotation on pointsGroup
+// (was causing raycasting to be misaligned with visual positions)
+// ────────────────────────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
